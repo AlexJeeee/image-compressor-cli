@@ -1,16 +1,29 @@
 {
   "name": "image-compressor-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "bin": {
-    "compress-images": "./index.js"
+    "compress-images": "index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AlexJeeee/image-compressor-cli.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "jpeg",
+    "png",
+    "webp",
+    "image",
+    "compress",
+    "image-compressor",
+    "nodejs",
+    "cli"
+  ],
+  "author": "AlexJee",
   "license": "ISC",
   "dependencies": {
     "commander": "^12.1.0",
