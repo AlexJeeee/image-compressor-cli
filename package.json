@@ -1,10 +1,10 @@
 {
-  "name": "my-cli-tool",
+  "name": "image-compressor-cli",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "bin": {
-    "mycli": "./index.js"
+    "compress-images": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "sharp": "^0.33.5"
   }
 }
