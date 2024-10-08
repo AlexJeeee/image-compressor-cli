@@ -8,11 +8,11 @@ npm install -g image-compressor-cli
 ## Usage
 To define quality
 ```bash
-compress-images --quality 70
+image-compressor-cli --quality 70
 ```
 or all set by default
 ```bash
-compress-images
+image-compressor-cli
 ```
 
 ## supported extensions

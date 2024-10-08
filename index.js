@@ -8,7 +8,7 @@ const { Command } = require('commander');
 const program = new Command();
 
 program
-  .version('1.0.0')
+  .version('1.0.2')
   .description('CLI tool to compress images in the current directory and replace the original files')
   .option('-q, --quality <number>', 'Set image quality (default: 80)', 80);
 
