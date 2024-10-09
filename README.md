@@ -1,5 +1,5 @@
 # image-compressor-cli
-a image compressor cli based on [sharp](https://www.npmjs.com/package/sharp), it will compress images and replace them
+a image compressor cli based on [sharp](https://www.npmjs.com/package/sharp), it will compress images and **replace them**
 
 ## install
 ```bash
