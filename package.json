@@ -1,6 +1,6 @@
 {
   "name": "image-compressor-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -11,7 +11,8 @@
     "url": "https://github.com/AlexJeeee/image-compressor-cli.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "preinstall": "npx only-allow npm"
   },
   "keywords": [
     "jpeg",
@@ -19,6 +20,7 @@
     "webp",
     "bmp",
     "tiff",
+    "gif",
     "image",
     "compress",
     "image-compressor",
@@ -29,6 +31,7 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^12.1.0",
+    "gifsicle": "^7.0.1",
     "sharp": "^0.33.5"
   }
 }
