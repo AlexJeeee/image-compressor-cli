@@ -1,6 +1,6 @@
 {
   "name": "image-compressor-cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -17,6 +17,8 @@
     "jpeg",
     "png",
     "webp",
+    "bmp",
+    "tiff",
     "image",
     "compress",
     "image-compressor",

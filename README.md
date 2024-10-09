@@ -17,13 +17,16 @@ image-compressor-cli
 
 ## supported extensions
 
-| supported extensions  | notes  | 
-| :----------- |:------: |
-| jpg      | lossy compression |
-| jpeg       | lossy compression |
-| png       | lossless compression |
-| webp       | lossy compression |
+| supported extensions  |                notes                | 
+| :----------- |:-----------------------------------:|
+| jpg      |          lossy compression          |
+| jpeg       |          lossy compression          |
+| png       |        lossless compression         |
+| webp       |          lossy compression          |
+| bmp       | quality adjustment is not supported |
 
 p.s.
 <br />
-WebP is generally smaller and higher quality than JPEG and PNG formats, so pay attention to the selection of compression parameters when compressing to prevent image distortion caused by over-compression.
+**WebP** is generally smaller and higher quality than JPEG and PNG formats, so pay attention to the selection of compression parameters when compressing to prevent image distortion caused by over-compression.
+
+sharp can only process the first frame of the **GIF** file, it will become a static image after processing, so **GIF** is not supported at the moment.

@@ -16,7 +16,7 @@ program.parse(process.argv);
 
 const options = program.opts();
 
-const ImageExtensions = ['.jpg', '.jpeg', '.png', '.webp']
+const ImageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff'];
 
 // 获取当前目录中的所有图片文件
 const getImages = (directory) => {
@@ -44,11 +44,19 @@ const compressImage = async (filePath, quality) => {
         .toFile(tempFilePath); // 保存到临时文件
     } else if (ext === '.png') {
       await sharp(filePath)
-        .png({ quality: parseInt(quality), compressionLevel: 9 })
+        .png({ compressionLevel: 9 }) // PNG 使用无损压缩，没有 `quality` 参数
         .toFile(tempFilePath); // 保存到临时文件
     } else if (ext === '.webp') {
       await sharp(filePath)
         .webp({ quality: parseInt(quality) })
+        .toFile(tempFilePath); // 保存到临时文件
+    } else if (ext === '.bmp') {
+      await sharp(filePath)
+        .bmp() // BMP 格式不支持质量调整，因此直接保存
+        .toFile(tempFilePath); // 保存到临时文件
+    } else if (ext === '.tiff') {
+      await sharp(filePath)
+        .tiff({ quality: parseInt(quality) }) // 支持 TIFF 压缩
         .toFile(tempFilePath); // 保存到临时文件
     }
     
