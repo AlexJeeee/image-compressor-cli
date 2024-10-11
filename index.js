@@ -18,7 +18,7 @@ program.parse(process.argv);
 
 const options = program.opts();
 
-const ImageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.gif'];
+const ImageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.tiff', '.gif'];
 
 // 获取当前目录中的所有图片文件
 const getImages = (directory) => {
@@ -72,11 +72,6 @@ const compressImage = async (filePath, { quality, colors, outputDir }) => {
     } else if (ext === '.webp') {
       await sharp(filePath)
         .webp({ quality: parseInt(quality) })
-        .toFile(tempFilePath);
-      handleOutput(tempFilePath, filePath, outputDir);
-    } else if (ext === '.bmp') {
-      await sharp(filePath)
-        .bmp()
         .toFile(tempFilePath);
       handleOutput(tempFilePath, filePath, outputDir);
     } else if (ext === '.tiff') {
