@@ -1,6 +1,6 @@
 {
   "name": "image-compressor-cli",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -31,7 +31,6 @@
   "license": "ISC",
   "dependencies": {
     "commander": "^12.1.0",
-    "gifsicle": "^7.0.1",
     "sharp": "^0.33.5"
   }
 }
