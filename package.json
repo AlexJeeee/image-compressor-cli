@@ -1,8 +1,9 @@
 {
   "name": "image-compressor-cli",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "bin": {
     "image-compressor-cli": "index.js"
   },
@@ -25,12 +26,18 @@
     "compress",
     "image-compressor",
     "nodejs",
-    "cli"
+    "cli",
+    "tinify",
+    "tinypng",
+    "sharp"
   ],
   "author": "AlexJee",
   "license": "ISC",
   "dependencies": {
     "commander": "^12.1.0",
-    "sharp": "^0.33.5"
+    "conf": "^13.0.1",
+    "ora": "^8.1.1",
+    "sharp": "^0.33.5",
+    "tinify": "^1.7.1"
   }
 }

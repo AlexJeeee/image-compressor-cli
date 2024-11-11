@@ -1,22 +1,23 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const sharp = require('sharp');
-const os = require('os');
-const { Command } = require('commander');
+import fs from 'fs';
+import path from 'path';
+import os from 'os';
+import { Command } from 'commander';
+import tinify from 'tinify';
+import sharp from 'sharp';
+import ora from 'ora';
+import Conf from 'conf';
 const program = new Command();
 
-program
-  .version('1.0.6')
-  .description('CLI tool to compress images in the current directory and replace the original files or save to a custom directory')
-  .option('-q, --quality <number>', 'Set static image quality', 80)
-  .option('-c, --colors <number>', 'Set gif image maximum number of palette entries, including transparency, between 2 and 256', 128)
-  .option('-o, --output-dir <directory>', 'Specify a custom output directory');
+const config = new Conf({
+  projectName: 'image-compressor-cli',
+  defaults: {
+    apiKey: ''
+  }
+});
 
 program.parse(process.argv);
-
-const options = program.opts();
 
 const ImageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.gif'];
 
@@ -36,61 +37,61 @@ const ensureOutputDirectory = (directory) => {
 };
 
 // 处理文件替换或输出到指定目录
-const handleOutput = (tempPath, originalPath, outputDir) => {
+const handleOutput = (tempPath, originalPath, outputDir, spinner) => {
   if (outputDir) {
     ensureOutputDirectory(outputDir);
     const outputFilePath = path.join(outputDir, path.basename(originalPath));
     fs.renameSync(tempPath, outputFilePath); // 将临时文件保存到输出目录
-    console.log(`Compressed and saved to: ${outputFilePath}`);
+    spinner.succeed(`Compressed and saved to: ${outputFilePath}`);
   } else {
     fs.renameSync(tempPath, originalPath); // 替换原文件
-    console.log(`Compressed and replaced: ${originalPath}`);
+    spinner.succeed(`Compressed and replaced: ${originalPath}`);
   }
 };
 
 // 根据文件扩展名压缩图片并处理输出
-const compressImage = async (filePath, { quality, colors, outputDir }) => {
-  const ext = path.extname(filePath).toLowerCase();
-  const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
-  
+const compressImage = async (originalPath, { quality, colors, outputDir }) => {
+  const apiKey = config.get('apiKey');
+  if (!apiKey) {
+    console.error('No API key, please set it first using the following command:');
+    console.error('image-compressor-cli config --key YOUR_API_KEY');
+    process.exit(1);
+  }
+
+  tinify.key = apiKey;
+  const ext = path.extname(originalPath).toLowerCase();
+  const tempPath = path.join(os.tmpdir(), path.basename(originalPath));
+  const spinner = ora(`compressing ${path.basename(originalPath)}`).start();
+
   try {
-    if (ext === '.gif') {
-      await sharp(filePath, { animated: true })
+    if (['.jpg', '.jpeg', '.png', '.webp'].includes(ext)) {
+      const source = tinify.fromFile(originalPath);
+      await source.toFile(tempPath);
+      handleOutput(tempPath, originalPath, outputDir, spinner);
+    } else if (ext === '.gif') {
+      await sharp(originalPath, { animated: true })
         .gif({ colors: parseInt(colors) })
-        .toFile(tempFilePath);
-      handleOutput(tempFilePath, filePath, outputDir);
-    } else if (ext === '.jpg' || ext === '.jpeg') {
-      await sharp(filePath)
-        .jpeg({ quality: parseInt(quality) })
-        .toFile(tempFilePath);
-      handleOutput(tempFilePath, filePath, outputDir);
-    } else if (ext === '.png') {
-      await sharp(filePath)
-        .png({ compressionLevel: 9 })
-        .toFile(tempFilePath);
-      handleOutput(tempFilePath, filePath, outputDir);
-    } else if (ext === '.webp') {
-      await sharp(filePath)
-        .webp({ quality: parseInt(quality) })
-        .toFile(tempFilePath);
-      handleOutput(tempFilePath, filePath, outputDir);
+        .toFile(tempPath);
+      handleOutput(tempPath, originalPath, outputDir, spinner);
     } else if (ext === '.bmp') {
-      await sharp(filePath)
+      await sharp(originalPath)
         .bmp()
-        .toFile(tempFilePath);
-      handleOutput(tempFilePath, filePath, outputDir);
+        .toFile(tempPath);
+      handleOutput(tempPath, originalPath, outputDir, spinner);
     } else if (ext === '.tiff') {
-      await sharp(filePath)
+      await sharp(originalPath)
         .tiff({ quality: parseInt(quality) })
-        .toFile(tempFilePath);
-      handleOutput(tempFilePath, filePath, outputDir);
+        .toFile(tempPath);
+      handleOutput(tempPath, originalPath, outputDir, spinner);
+    } else {
+      spinner.fail(`unsupported file type: ${originalPath}`);
     }
   } catch (error) {
-    console.error(`Failed to compress ${filePath}:`, error);
+    spinner.fail(`compress ${originalPath} failed: ${error.message}`);
   }
 };
 
-const main = () => {
+const main = (options) => {
   const images = getImages(process.cwd());
   if (images.length === 0) {
     console.log('No images found in the current directory.');
@@ -98,9 +99,49 @@ const main = () => {
   }
   
   images.forEach((image) => {
-    const filePath = path.join(process.cwd(), image);
-    compressImage(filePath, options);
+    const originalPath = path.join(process.cwd(), image);
+    compressImage(originalPath, options);
   });
 };
 
-main();
+// main();
+
+
+program
+  .version('1.0.7')
+  .description('CLI tool to compress images using TinyPNG API by default(jpg, jpeg, png, webp) and Sharp for other formats(bmp, tiff, gif)')
+  .option('-q, --quality <number>', 'Set Sharp static image quality', 80)
+  .option('-c, --colors <number>', 'Set gif image maximum number of palette entries, including transparency, between 2 and 256', 128)
+  .option('-o, --output-dir <directory>', 'Specify a custom output directory')
+  .action(main)
+
+program
+  .command('config')
+  .description('API key configuration management')
+  .option('-k, --key <string>', 'Set TinyPNG API key')
+  .option('-s, --show', 'Display the current API key')
+  .action((options) => {
+    if (options.key) {
+      config.set('apiKey', options.key);
+      console.log('API key saved');
+      process.exit(1);
+    }
+    
+    if (options.show) {
+      const savedKey = config.get('apiKey');
+      if (savedKey) {
+        console.log('Current saved API key:', savedKey);
+      } else {
+        console.log('No API key saved, please use config --key command to set.');
+      }
+      process.exit(1);
+    }
+
+    console.log('Use --key option to set API key or use --show to view current configuration');
+    process.exit(1);
+  });
+
+// 如果没有任何参数且没有子命令，执行默认的压缩功能
+if (!process.argv.slice(2).length) {
+  program.parseAsync([process.argv[0], process.argv[1]]);
+}
