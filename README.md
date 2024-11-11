@@ -65,7 +65,6 @@ Commands:
 | tiff                 |        lossless compression         |
 | webp                 |          lossy compression          |
 | gif                  |          lossy compression          |
-| bmp                  | quality adjustment is not supported |
 
 p.s.  
   
