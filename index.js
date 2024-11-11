@@ -17,8 +17,6 @@ const config = new Conf({
   }
 });
 
-program.parse(process.argv);
-
 const ImageExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tiff', '.gif'];
 
 // 获取当前目录中的所有图片文件
@@ -108,7 +106,7 @@ const main = (options) => {
 
 
 program
-  .version('1.0.8')
+  .version('1.0.9')
   .description('CLI tool to compress images using TinyPNG API by default(jpg, jpeg, png, webp) and Sharp for other formats(bmp, tiff, gif)')
   .option('-q, --quality <number>', 'Set Sharp static image quality', 80)
   .option('-c, --colors <number>', 'Set gif image maximum number of palette entries, including transparency, between 2 and 256', 128)
@@ -141,7 +139,4 @@ program
     process.exit(1);
   });
 
-// 如果没有任何参数且没有子命令，执行默认的压缩功能
-if (!process.argv.slice(2).length) {
-  program.parseAsync([process.argv[0], process.argv[1]]);
-}
+program.parse(process.argv);
