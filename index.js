@@ -108,7 +108,7 @@ const main = (options) => {
 
 
 program
-  .version('1.0.7')
+  .version('1.0.8')
   .description('CLI tool to compress images using TinyPNG API by default(jpg, jpeg, png, webp) and Sharp for other formats(bmp, tiff, gif)')
   .option('-q, --quality <number>', 'Set Sharp static image quality', 80)
   .option('-c, --colors <number>', 'Set gif image maximum number of palette entries, including transparency, between 2 and 256', 128)
